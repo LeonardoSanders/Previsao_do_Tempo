@@ -1,23 +1,23 @@
-import requests
 from city_weather import CityWeather
 
+city = CityWeather()
 
-API_Key = "289c89fdae58929433efe0b4e59694c7"
-
-print('Welcome to the Weather Information Program')
-
-query_city = input("Please, enter your city: ").lower().strip()
-
-city = CityWeather(query_city)
-
-base_url = "https://api.openweathermap.org/data/2.5/weather?appid="+API_Key+"&q="+city.city
-
-weather_data = requests.get(base_url).json()
+print('Welcome to Real Time Weather Information Program')
+query_city = input("Please, enter your city: ").title().strip()
+weather_data = city.do_request(query_city)
 
 
+while True:
+    city_status = city.check_status_city(weather_data)
+    if not city_status:
+        city._name = city.new_option_city()
+        city._name = city.read_input(city._name)
+        weather_data = city.do_request(city._name)
+    else:
+        break
 
 def main():
-    city.read_input()
+    city.check_status_city(weather_data)
     city.set_variables(weather_data)
     city.write_data_variables()
     city.read_data_variables()

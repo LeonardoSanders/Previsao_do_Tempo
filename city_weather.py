@@ -1,9 +1,12 @@
 from pprint import pprint
+import requests
+
+API_Key = "289c89fdae58929433efe0b4e59694c7"
 
 class CityWeather():
 
-    def __init__(self, city):
-        self._city = city
+    def __init__(self, name=''):
+        self._name = name
         self.feels_like = 0
         self.humidity = 0
         self.temp_average = 0
@@ -13,7 +16,34 @@ class CityWeather():
     
     @property
     def city(self):
-        return self._city
+        return self._name
+    
+    @city.setter
+    def city(self, value):
+        self._name = value
+
+
+    def do_request(self, query_city):
+        q_city = query_city
+        self._name = CityWeather.read_input('', q_city)
+
+        base_url = "https://api.openweathermap.org/data/2.5/weather?appid="+API_Key+"&q="+self._name
+        weather_data = requests.get(base_url).json()
+
+        return weather_data
+
+    
+    def check_status_city(self, code):
+        if code['cod'] == '404':
+            print(f'{code['message'].upper()}! Please, try another City!')
+            return False
+        else:
+            return True
+        
+    
+    def new_option_city(self):
+        new_option = input("Please, enter your city: ").title().strip()
+        return new_option
 
     
     def set_variables(self, weather_data):
@@ -25,23 +55,25 @@ class CityWeather():
         self.weather_cond = weather_data['weather'][0]['description']
         
 
-    def read_input(self):
-        city_name = self._city
+    def read_input(self, city):
+        city_name = city
+        all_cities_file = open('all_cities_names.txt', 'r')
+        all_cities = all_cities_file.read().splitlines()
         
+
         while True:
-            if not city_name.isnumeric():
-                try:
-                    result = str(city_name)
-                    break
-                except:
-                    print('Invalid city name, please try again!')
-                    city_name = input("Please, enter your city: ").lower().strip()
+            find_city = all_cities.count(city_name)
+
+            if find_city == 1 and city_name.isalpha():
+                break
             else:
                 print('Invalid city name, please try again!')
-                city_name = input("Please, enter your city: ").lower().strip()
+                city_name = input("Please, enter your city: ").title().strip()
+        
+        all_cities_file.close()
 
-        return result
-    
+        return city_name
+        
 
     def write_data_variables(self):
         with open('data.txt', 'w', encoding='utf8') as file:
