@@ -1,0 +1,6 @@
+Average air temperature: 4.93°C
+Maximum temperature: 5.64°C
+Minimum temperature: 3.84°C
+Feels Like: 2.67°C
+Relative Humidity: 81%
+Weather condition: overcast clouds
