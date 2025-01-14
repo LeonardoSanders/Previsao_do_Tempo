@@ -17,7 +17,6 @@ while True:
         break
 
 def main():
-    city.check_status_city(weather_data)
     city.set_variables(weather_data)
     city.write_data_variables()
     city.read_data_variables()
